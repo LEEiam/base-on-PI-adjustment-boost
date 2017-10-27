@@ -6,6 +6,6 @@
 
 void Bsp_Current_Detector_Init(uint8_t current_channel);
 
-float Current_Convert_Value();
+float Current_Convert_Value(uint8_t current_channel);
 
 #endif

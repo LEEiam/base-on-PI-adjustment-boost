@@ -39,11 +39,12 @@ void bsp_Init(void)
 	bsp_InitTimer();	/* 初始化系统滴答定时器 */
 
 	/* 针对不同的应用程序，添加需要的底层驱动模块初始化函数 */
-//    bsp_InitADC();
+
     bsp_ADVANCED_TIMOutPWM(TIM1,1,40000,0.6);
-    bsp_InitADC();
-    TIM_Cmd(TIM1, ENABLE);
-    TIM_ITConfig(TIM1,TIM_IT_Update,ENABLE);
+//    bsp_InitADC();
+    Bsp_Current_Detector_Init(5);
+//    TIM_Cmd(TIM1, ENABLE);
+//    TIM_ITConfig(TIM1,TIM_IT_Update,ENABLE);
 }
 
 /*

@@ -82,6 +82,7 @@ static void PrintfLogo(void);
 */
 int main(void)
 {
+    float a;
 	/*
 		ST固件库中的启动文件已经执行了 SystemInit() 函数，该函数在 system_stm32f4xx.c 文件，主要功能是
 	配置CPU系统的时钟，内部Flash访问时序，配置FSMC用于外部SRAM
@@ -105,71 +106,75 @@ int main(void)
 	/* 进入主程序循环体 */
 	while (1)
 	{
-
-        if(adjust_state)
-        {
-            TIM_ITConfig(TIM1,TIM_IT_Update,DISABLE);
-           adjust_state=0;//复位状态
-            ADC_Converted_Value_total=0;
-            for(i=0;i<10;i++)
-            {
-                
-                if( ( abs(ADC_Converted_Value[i]-ADC_Converted_Value[i-1]) >= 50) && i>=1)
-                {
-                    ADC_Converted_Value[i]=ADC_Converted_Value[i-1];
-                }
-                
-                ADC_Converted_Value_total=ADC_Converted_Value_total+ADC_Converted_Value[i];
-            }
-            
-            ADC_Converted_average_Value=(float32_t)ADC_Converted_Value_total/10.0;
-            
-           
-            pid.Actual=ADC_Converted_average_Value*3.0/4095;
-            
-            /*积分分离*/
-            if(abs(pid.err)>0.2)
-            {   
-                pid.mark=0.0;
-            }
-            else
-                pid.mark=1.0;
-            
-             out = PID_realize(1.453);//PID运算
-            
-            /*限幅*/
-            if(out>=(SystemCoreClock/40000-1)*0.65)
-            {
-                    out=(SystemCoreClock/40000-1)*0.65;
-  
-            }
-            if(out<(SystemCoreClock/40000-1)*0.35)
-            {
-                out=(SystemCoreClock/40000-1)*0.35;
-            }
-            TIM_ITConfig(TIM1,TIM_IT_Update,ENABLE);
-            
-        }
-       if (bsp_CheckTimer(0))   //200ms打印一次PID参数
+           if (bsp_CheckTimer(0))   //200ms打印一次PID参数
        {
-           printf("\r\n out = %f   pid.Actual = %f   pid.err= %f  ADC_Converted_average_Value=%f pid.integral=%f\n\r", out,   pid.Actual,pid.err,ADC_Converted_average_Value,pid.integral);
+//          printf("ADC_GetConversionValue=%d\n\r",ADC_GetConversionValue(ADC2));
+        a= Current_Convert_Value(5);
        }
-        
-//       if (bsp_CheckTimer(1))  //3秒打印1次nADC_Converted_Value
-//       {      
-//           for(i=0;i<10;i++)
-//           {
-////                TIM_ITConfig(TIM1,TIM_IT_Update,DISABLE);
-//               if(( abs(ADC_Converted_Value[i]-ADC_Converted_Value[i-1]) >= 100) && i>=1)
-//               {
-//                   printf("                  ");
-//               }
-//               printf("\r\nADC_Converted_Value[%d]= %d\n\r",i,ADC_Converted_Value[i]);
+//        if(adjust_state)
+//        {
+//            TIM_ITConfig(TIM1,TIM_IT_Update,DISABLE);
+//           adjust_state=0;//复位状态
+//            ADC_Converted_Value_total=0;
+//            for(i=0;i<10;i++)
+//            {
+//                
+//                if( ( abs(ADC_Converted_Value[i]-ADC_Converted_Value[i-1]) >= 50) && i>=1)
+//                {
+//                    ADC_Converted_Value[i]=ADC_Converted_Value[i-1];
+//                }
+//                
+//                ADC_Converted_Value_total=ADC_Converted_Value_total+ADC_Converted_Value[i];
+//            }
 //            
-//           }
-////            TIM_ITConfig(TIM1,TIM_IT_Update,ENABLE);
-//        
+//            ADC_Converted_average_Value=(float32_t)ADC_Converted_Value_total/10.0;
+//            
+//           
+//            pid.Actual=ADC_Converted_average_Value*3.0/4095;
+//            
+//            /*积分分离*/
+//            if(abs(pid.err)>0.2)
+//            {   
+//                pid.mark=0.0;
+//            }
+//            else
+//                pid.mark=1.0;
+//            
+//             out = PID_realize(1.453);//PID运算
+//            
+//            /*限幅*/
+//            if(out>=(SystemCoreClock/40000-1)*0.65)
+//            {
+//                    out=(SystemCoreClock/40000-1)*0.65;
+//  
+//            }
+//            if(out<(SystemCoreClock/40000-1)*0.35)
+//            {
+//                out=(SystemCoreClock/40000-1)*0.35;
+//            }
+//            TIM_ITConfig(TIM1,TIM_IT_Update,ENABLE);
+//            
+//        }
+//       if (bsp_CheckTimer(0))   //200ms打印一次PID参数
+//       {
+//           printf("\r\n out = %f   pid.Actual = %f   pid.err= %f  ADC_Converted_average_Value=%f pid.integral=%f\n\r", out,   pid.Actual,pid.err,ADC_Converted_average_Value,pid.integral);
 //       }
+//        
+////       if (bsp_CheckTimer(1))  //3秒打印1次nADC_Converted_Value
+////       {      
+////           for(i=0;i<10;i++)
+////           {
+//////                TIM_ITConfig(TIM1,TIM_IT_Update,DISABLE);
+////               if(( abs(ADC_Converted_Value[i]-ADC_Converted_Value[i-1]) >= 100) && i>=1)
+////               {
+////                   printf("                  ");
+////               }
+////               printf("\r\nADC_Converted_Value[%d]= %d\n\r",i,ADC_Converted_Value[i]);
+////            
+////           }
+//////            TIM_ITConfig(TIM1,TIM_IT_Update,ENABLE);
+////        
+////       }
            
     }
 }
